@@ -1,0 +1,266 @@
+categories:
+- id: 1
+  title: Deployment Environment
+  description: Decisions regarding the hosting platform, serving method, and foundational
+    architecture for the knowledge base.
+  created_at: '2026-05-28T21:54:42'
+  modified_at: '2026-05-28T21:54:42'
+  decisions:
+  - id: 1
+    title: Use GitHub Pages as the Static Hosting Environment
+    problem: The repository needs a free, reliable, and zero-maintenance hosting solution
+      to serve technical articles globally. Initial ideas considered dynamic rendering
+      (SSR).
+    decision: Adopt a Static Site Generation (SSG) architecture and host the rendered
+      HTML files on GitHub Pages. Dynamic SSR is abandoned for this specific use case.
+    pros:
+    - Zero hosting costs
+    - Native integration with GitHub repositories
+    - High availability and performance for static content
+    cons:
+    - Inability to run server-side logic (e.g., dynamic Jinja rendering on request)
+      directly on the host
+    modified_at: '2026-05-28T21:54:42'
+    sub_decisions: []
+    deprecated: false
+  deprecated: false
+- id: 2
+  title: Documentation Engine & Core Plugins
+  description: Decisions defining the framework, visual theme, and plugins used to
+    parse Markdown and generate the static site.
+  created_at: '2026-05-28T21:54:42'
+  modified_at: '2026-05-28T21:54:43'
+  decisions:
+  - id: 1
+    title: Use MkDocs with the Material Theme
+    problem: Building and maintaining a custom markdown renderer requires significant
+      effort and diverges focus from content creation.
+    decision: Use MkDocs, a Python-based SSG, paired with the 'Material for MkDocs'
+      theme.
+    pros:
+    - Industry standard for technical documentation
+    - Out-of-the-box responsive design
+    - Native support for tags and admonitions
+    cons:
+    - Requires learning the MkDocs configuration schema
+    modified_at: '2026-05-28T21:54:42'
+    sub_decisions: []
+    deprecated: false
+  - id: 2
+    title: Implement mkdocs-static-i18n
+    problem: The knowledge base must support multiple languages (English and Portuguese)
+      with automatic URL synchronization between equivalent articles.
+    decision: Use the mkdocs-static-i18n plugin to generate static language-specific
+      versions of the site while maintaining a unified Markdown structure in the repository.
+    pros:
+    - Native language selector
+    - SEO friendly
+    - Transparent URL translation
+    cons:
+    - Adds minor complexity to the build process
+    modified_at: '2026-05-28T21:54:42'
+    sub_decisions: []
+    deprecated: false
+  - id: 3
+    title: Implement mkdocs-macros-plugin
+    problem: README.md files acting as directory index pages need to dynamically list
+      all articles within their respective folders to avoid manual index updates.
+    decision: Use the mkdocs-macros-plugin to inject Jinja2 templates directly into
+      Markdown files, allowing dynamic iteration over page objects during the build.
+    pros:
+    - Eliminates manual index updates
+    - Keeps logic inside standard Markdown files
+    cons:
+    - Markdown files containing Jinja syntax will display raw loops when viewed directly
+      on GitHub's native viewer
+    modified_at: '2026-05-28T21:54:43'
+    sub_decisions: []
+    deprecated: false
+  deprecated: false
+- id: 3
+  title: Repository Structure and CI/CD
+  description: Decisions regarding Git branching strategy and automated deployment
+    pipelines.
+  created_at: '2026-05-28T21:54:43'
+  modified_at: '2026-05-28T21:54:43'
+  decisions:
+  - id: 1
+    title: Branch Strategy
+    problem: Maintaining all the HTML content in the same branch as the Markdown source
+      files and configuration can lead to a terrible experience for users that want
+      to clone the repository and view the Markdown files directly on GitHub or his
+      own device.
+    decision: Maintain a single 'main' branch containing both the Markdown content
+      (docs/) and configuration files. Generated HTML will be isolated to the 'gh-pages'
+      branch.
+    pros:
+    - Allows immediate local testing
+    - Simplifies the Git workflow for content authors
+    - Keeps main branch lightweight
+    cons:
+    - Mixes system configuration files with raw content in the same branch root
+    modified_at: '2026-05-28T21:54:43'
+    sub_decisions: []
+    deprecated: false
+  - id: 2
+    title: Automate Build and Deployment via GitHub Actions
+    problem: Manual compilation of the MkDocs site and subsequent pushing to the gh-pages
+      branch is repetitive and prone to error.
+    decision: Implement a GitHub Actions workflow triggered on pushes to the main
+      branch to automatically install dependencies, build the static site, and deploy
+      to gh-pages.
+    pros:
+    - Fully automated pipeline
+    - Ensures production always reflects the main branch
+    - No manual intervention required
+    cons:
+    - Relies on GitHub's CI/CD availability
+    modified_at: '2026-05-28T21:54:43'
+    sub_decisions: []
+    deprecated: false
+  deprecated: false
+- id: 4
+  title: Content Organization and Navigation
+  description: Decisions regarding directory structure, metadata, and dynamic content
+    generation for the knowledge base.
+  created_at: '2026-05-28T21:54:43'
+  modified_at: '2026-06-04T17:05:17'
+  decisions:
+  - id: 1
+    title: Multilingual Directory Architecture
+    problem: Content must be available in Portuguese and English, requiring a standardized
+      structure that allows easy navigation and automatic URL synchronization.
+    decision: Organize content using the strict pattern `docs/<lang>/<category>/[sub-category]/<file>.md`.
+      Equivalent files must share the exact same filename across language directories.
+    pros:
+    - Clean separation of languages
+    - Enables seamless language switching via the i18n plugin
+    - Predictable path structure for content creators
+    cons:
+    - Requires discipline to maintain naming parity across the 'pt' and 'en' directories
+    modified_at: '2026-05-28T21:54:43'
+    sub_decisions: []
+    deprecated: false
+  - id: 2
+    title: Invisible Metadata via YAML Front Matter
+    problem: Articles need to be categorized and tagged for searchability and related-content
+      linking without polluting the visual reading experience.
+    decision: Embed tags and categories exclusively within standard YAML front matter
+      at the top of each Markdown document. This header will be parsed by the engine
+      but not rendered as text in the final HTML.
+    pros:
+    - Native support in MkDocs Material
+    - Keeps the Markdown body clean
+    - Enables automated aggregation and filtering
+    cons:
+    - Requires authors to follow a strict YAML schema for each post
+    modified_at: '2026-05-28T21:54:43'
+    sub_decisions: []
+    deprecated: false
+  - id: 3
+    title: Dynamic Indexing
+    problem: Maintaining manual lists of articles within categories and subcategories
+      is error-prone and scales poorly as the repository grows.
+    decision: Use the `README.md` files (rendered as `index.html` by MkDocs) from
+      language|category|subcategory subdirectories as entrypoint for each one. Inject
+      Jinja macros into these files to automatically iterate and list all child contents.
+    pros:
+    - Zero manual maintenance for category index pages
+    - Preserves native GitHub navigation when reading raw files in the repository
+    cons:
+    - Raw Markdown files will display Jinja loop syntax when viewed directly on GitHub's
+      native viewer
+    modified_at: '2026-06-04T17:05:17'
+    sub_decisions: []
+    deprecated: false
+  - id: 4
+    title: Automated Content Showcases
+    problem: The main landing page and individual articles need to surface relevant
+      content to keep readers engaged, without requiring manual curation.
+    decision: Utilize Jinja macros and blog plugins to automatically render the 3
+      most recently published articles on the root `README.md`, and generate a simple
+      list of up to 3 related articles based on shared tags at the bottom of each
+      post.
+    pros:
+    - Improves user engagement and content discoverability
+    - Fully automated layout updates whenever a new article is pushed
+    cons:
+    - Increases the processing overhead during the static site generation build phase
+    modified_at: '2026-05-28T21:54:44'
+    sub_decisions: []
+    deprecated: false
+  - id: 5
+    title: Main Entry Point
+    problem: We have different languages under `docs/`, a single README as root page
+      would break the language selection.
+    decision: 'Instead of using the repos''s root `README` as the landing page, we
+      will place a `README.md` in each language subdirectory, redirecting who connects
+      to `/` endpoint to its desired language, with fallback to English. E.g: `{url}/`
+      → `{url}/en/` rendering the `docs/en/README.md` page.'
+    pros: []
+    cons: []
+    modified_at: '2026-06-04T16:59:59'
+    sub_decisions: []
+    deprecated: false
+  deprecated: false
+- id: 5
+  title: License
+  description: Decisions defining the License structure and how they will be displayed.
+  created_at: '2026-05-29T20:48:25'
+  modified_at: '2026-06-04T16:10:01'
+  decisions:
+  - id: 1
+    title: Source Code and Content Licenses
+    problem: The Source Code from the html generator and the Content from the Articles
+      have different natures.
+    decision: Use MIT for the source code, and CC BY 4.0 for the content under `docs/`
+      directory.
+    pros: []
+    cons: []
+    modified_at: '2026-06-04T16:01:14'
+    sub_decisions:
+    - id: 1
+      title: CC Copies
+      problem: We should place a copy of the CC license under the `docs/` directory,
+        but we have many languages in our structure.
+      decision: 'Place a copy under each language subdirectory, e.g.: `docs/en/LICENSE.md`
+        & `docs/pt/LICENSE.md`.'
+      pros: []
+      cons: []
+      modified_at: '2026-06-04T15:54:46'
+      deprecated: false
+    deprecated: false
+  - id: 2
+    title: CC Notice on Pages
+    problem: The CC note should appear on our content pages.
+    decision: Our python script should place automatically a footer note in ALL the
+      pages, with a link to the page `docs/{lang}/LICENSE.md` an to the official creative
+      commons website `https://creativecommons.org/licenses/by/4.0/`.
+    pros: []
+    cons: []
+    modified_at: '2026-06-04T15:59:26'
+    sub_decisions: []
+    deprecated: false
+  - id: 3
+    title: LICENSE Pages
+    problem: As the ADR-5.2 decides, we need to have a page inside our pages dedicated
+      to the CC License copy.
+    decision: Render the 'LICENSE' markdown placed at `docs/` - as decided on AR-5.1.1
+      - under the endpoint `/{lang}/LICENSE`, in each laguage, as any other page,
+      but without the footer CC notice.
+    pros: []
+    cons: []
+    modified_at: '2026-06-04T16:06:16'
+    sub_decisions: []
+    deprecated: false
+  - id: 4
+    title: README Notice
+    problem: The `README.md` is the "landing page" from our repository, we must add
+      a License Notice declaring the scope of each one.
+    decision: Write a "License" section, specifying the scopes from each LICENSE and
+      link to them.
+    pros: []
+    cons: []
+    modified_at: '2026-06-04T16:10:01'
+    sub_decisions: []
+    deprecated: false
