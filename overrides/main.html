@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap" rel="stylesheet">
+  <style>
+    /* Titles & Highlights */
+    :is(h1, h2, h3, h4, h5, h6),
+    .md-header__title,
+    .md-nav__title,
+    strong, b {
+      font-family: 'Sen', sans-serif;
+    }
+    /* Light mode (default) */
+    [data-md-color-scheme="default"] {
+      --md-primary-fg-color: #FF002F;
+      --md-primary-fg-color--light: #EB9FA3;
+      --md-primary-fg-color--dark: #373131;
+
+      --md-accent-fg-color: #FF002F;
+
+      --md-default-bg-color: #FFE3E4;
+      --md-default-fg-color: #212121;
+
+      --md-typeset-color: #212121;
+      --md-typeset-a-color: #FF002F;
+
+      --md-footer-bg-color: #212121;
+      --md-footer-bg-color--dark: #373131;
+      --md-footer-fg-color: #FFE3E4;
+      --md-footer-fg-color--light: #EB9FA3;
+    }
+
+    /* Dark mode (slate) */
+    [data-md-color-scheme="slate"] {
+      --md-primary-fg-color: #FF002F;
+      --md-primary-fg-color--light: #EB9FA3;
+      --md-primary-fg-color--dark: #373131;
+
+      --md-accent-fg-color: #EB9FA3;
+
+      --md-default-bg-color: #212121;
+      --md-default-fg-color: #FFE3E4;
+
+      --md-typeset-color: #FFE3E4;
+      --md-typeset-a-color: #EB9FA3;
+
+      --md-footer-bg-color: #373131;
+      --md-footer-bg-color--dark: #212121;
+      --md-footer-fg-color: #FFE3E4;
+      --md-footer-fg-color--light: #EB9FA3;
+    }
+  </style>
+{% endblock %}
