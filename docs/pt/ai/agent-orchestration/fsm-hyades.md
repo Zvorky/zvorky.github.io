@@ -1,5 +1,5 @@
 ---
-title: Engenharia de Sistemas para Agentes de IA - Por que Loops Estocásticos Quebram em Produção e como FSMs e Minions Resolvem o Problema
+title: Engenharia de Sistemas para Agentes de IA — FSMs e Minions para Confiabilidade em Produção
 description: Um mergulho na arquitetura determinística do Hyades, decomposição em minions inspirada no Starnet e controle estrito de memória e estado.
 date: 2026-10-08
 tags:
@@ -12,7 +12,7 @@ tags:
   - Linux
 ---
 
-# Engenharia de Sistemas para Agentes de IA: Por que Loops Estocásticos Quebram em Produção e como FSMs e Minions Resolvem o Problema
+# Engenharia de Sistemas para Agentes de IA — FSMs e Minions para Confiabilidade em Produção
 
 > **Status do Projeto:** WIP / Em desenvolvimento ativo  
 > **Autor:** Enzo Zavorski Delevatti ([@Zvorky](https://github.com/Zvorky))  
@@ -193,7 +193,3 @@ Minha prioridade neste momento é estabilizar a esteira de CI, consolidar os qua
 Este artigo é um **documento vivo**. À medida que eu avançar nos próximos marcos de desenvolvimento — especialmente nos benchmarks comparativos de throughput, na evolução do protocolo IPC e na integração com provedores locais de inferência —, atualizarei este texto com métricas e detalhes adicionais de implementação.
 
 Assim que a fundação estiver verdadeiramente estável e validada em batalha, o repositório terá seu código-fonte aberto para a comunidade.
-
----
-
-*Gostou da discussão ou tem uma visão diferente sobre orquestração de agentes? Sinta-se à vontade para abrir uma issue ou trocar uma ideia técnica no meu perfil do GitHub: [@Zvorky](https://github.com/Zvorky).*
