@@ -91,23 +91,23 @@ A peça que falta para fechar essa equação é a **Máquina de Estados Finitos 
 A abordagem que transforma esse cenário em engenharia de produção é inverter a hierarquia de controle. O software determinístico governa; o modelo apenas computa.
 
 ```
-                  ┌─────────────────────────────────────────┐
-                  │    FSM Determinística (Código Rígido)   │
-                  │   Estados Válidos e Contratos Estritos   │
-                  └────────────────────┬────────────────────┘
-                                       │
-        ┌──────────────────────────────┼──────────────────────────────┐
-        ▼                              ▼                              ▼
-┌───────────────┐              ┌───────────────┐              ┌───────────────┐
-│ Estado: PARSE │              │ Estado: EVAL  │              │ Estado: EXEC  │
-├───────────────┤              ├───────────────┤              ├───────────────┤
-│ Capability:   │              │ Capability:   │              │ Capability:   │
-│ [read_spec]   │              │ [calc_diff]   │              │ [write_db]    │
-└───────┬───────┘              └───────┬───────┘              └───────┬───────┘
-        │                              │                              │
-        ▼                              ▼                              ▼
-   (Minion LLM                    (Minion LLM                    (Minion LLM
-    Escopo Puro)                   Escopo Puro)                   Escopo Puro)
+      ┌─────────────────────────────────────────┐
+      │    FSM Determinística (Código Rígido)   │
+      │   Estados Válidos e Contratos Estritos  │
+      └────────────────────┬────────────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼                  ▼                  ▼
+┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+│ Estado: PARSE │  │ Estado: EVAL  │  │ Estado: EXEC  │
+├───────────────┤  ├───────────────┤  ├───────────────┤
+│ Capability:   │  │ Capability:   │  │ Capability:   │
+│ [read_spec]   │  │ [calc_diff]   │  │ [write_db]    │
+└───────┬───────┘  └───────┬───────┘  └───────┬───────┘
+        │                  │                  │
+        ▼                  ▼                  ▼
+   (Minion LLM        (Minion LLM        (Minion LLM
+    Escopo Puro)       Escopo Puro)       Escopo Puro)
 ```
 
 Essa arquitetura se apoia em três pilares:

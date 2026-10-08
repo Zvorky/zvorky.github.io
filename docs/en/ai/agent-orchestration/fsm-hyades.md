@@ -19,7 +19,7 @@ tags:
 > **Date:** October 2026  
 > **Topics:** Systems Engineering, Autonomous Agents, Finite State Machines (FSM), Linux IPC, Model Context Protocol.
 
-*(Note: English translation is currently in progress. Please refer to the [Portuguese version](../../../pt/ai/agent-orchestration/fsm-hyades.md) for the full article).*
+*(Note: English translation is currently in progress. Please refer to the [Portuguese version](../../../pt/ai/agent-orchestration/fsm-hyades) for the full article).*
 
 ## Overview
 
