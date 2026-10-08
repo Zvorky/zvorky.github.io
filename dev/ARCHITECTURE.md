@@ -72,18 +72,25 @@
 
 
 ## **[ADR-4.0]** Content Organization and Navigation
-**Created at:** 2026-05-28T21:54:43 | **Modified at:** 2026-06-04T17:05:17  
+**Created at:** 2026-05-28T21:54:43 | **Modified at:** 2026-10-08T13:26:03  
 
 **Description:** Decisions regarding directory structure, metadata, and dynamic content generation for the knowledge base.  
 
-- ### **[ADR-4.1]** Multilingual Directory Architecture  
-  **Modified at:** 2026-05-28T21:54:43  
+- ### **[ADR-4.1.0]** Multilingual Directory Architecture  
+  **Modified at:** 2026-10-08T13:26:03  
   **Problem:** Content must be available in Portuguese and English, requiring a standardized structure that allows easy navigation and automatic URL synchronization.  
   **Decision:** Organize content using the strict pattern `docs/<lang>/<category>/[sub-category]/<file>.md`. Equivalent files must share the exact same filename across language directories.  
   **Pro:** Clean separation of languages  
   **Pro:** Enables seamless language switching via the i18n plugin  
   **Pro:** Predictable path structure for content creators  
   **Con:** Requires discipline to maintain naming parity across the 'pt' and 'en' directories  
+  - #### **[ADR-4.1.1]** Shared Assets Directory Exception  
+    **Modified at:** 2026-10-08T13:26:03  
+    **Problem:** MkDocs theme assets (logo, favicon) and other shared static files need a home under docs/ that is not language-specific article content.  
+    **Decision:** Allow a shared `docs/assets/` directory at the docs root, outside language directories, for static resources referenced by MkDocs. This is an exception to ADR-4.1's language-only root rule; build validation must accept `assets` alongside `en` and `pt`.  
+    **Pro:** Single shared location for logo/favicon and other non-localized assets  
+    **Pro:** Keeps language directories focused on written content  
+    **Con:** Slightly relaxes the strict docs/ root structure  
 
 - ### **[ADR-4.2]** Invisible Metadata via YAML Front Matter  
   **Modified at:** 2026-05-28T21:54:43  

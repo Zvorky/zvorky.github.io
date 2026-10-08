@@ -124,7 +124,7 @@ categories:
   description: Decisions regarding directory structure, metadata, and dynamic content
     generation for the knowledge base.
   created_at: '2026-05-28T21:54:43'
-  modified_at: '2026-06-04T17:05:17'
+  modified_at: '2026-10-08T13:26:03'
   decisions:
   - id: 1
     title: Multilingual Directory Architecture
@@ -138,8 +138,23 @@ categories:
     - Predictable path structure for content creators
     cons:
     - Requires discipline to maintain naming parity across the 'pt' and 'en' directories
-    modified_at: '2026-05-28T21:54:43'
-    sub_decisions: []
+    modified_at: '2026-10-08T13:26:03'
+    sub_decisions:
+    - id: 1
+      title: Shared Assets Directory Exception
+      problem: MkDocs theme assets (logo, favicon) and other shared static files need
+        a home under docs/ that is not language-specific article content.
+      decision: Allow a shared `docs/assets/` directory at the docs root, outside
+        language directories, for static resources referenced by MkDocs. This is an
+        exception to ADR-4.1's language-only root rule; build validation must accept
+        `assets` alongside `en` and `pt`.
+      pros:
+      - Single shared location for logo/favicon and other non-localized assets
+      - Keeps language directories focused on written content
+      cons:
+      - Slightly relaxes the strict docs/ root structure
+      modified_at: '2026-10-08T13:26:03'
+      deprecated: false
     deprecated: false
   - id: 2
     title: Invisible Metadata via YAML Front Matter

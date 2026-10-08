@@ -22,6 +22,8 @@ class BuildValidator:
     """Validates project structure against architectural decisions."""
     
     SUPPORTED_LANGUAGES = ['en', 'pt']
+    # ADR-4.1.1: shared static assets may live at docs/assets/
+    DOCS_ROOT_EXCEPTIONS = ['assets']
     REQUIRED_DIRS = ['docs', '.github/workflows', 'dev']
     REQUIRED_FILES = ['macros.py', 'mkdocs.yml', 'requirements.txt']
 
@@ -29,29 +31,34 @@ class BuildValidator:
         return self.root_dir / 'docs'
 
     def _validate_docs_root_entries(self):
-        """Allow only language directories directly under docs/."""
+        """Allow language dirs plus ADR exceptions (e.g. assets) under docs/."""
         docs_dir = self._docs_root_path()
         if not docs_dir.exists():
             return
 
-        allowed = set(self.SUPPORTED_LANGUAGES)
+        allowed = set(self.SUPPORTED_LANGUAGES) | set(self.DOCS_ROOT_EXCEPTIONS)
         for entry in docs_dir.iterdir():
             if entry.name.startswith('.'):
                 continue
             if entry.name not in allowed:
                 self.errors.append(
                     f"Unexpected entry in docs/: {entry.name}. "
-                    f"Only language directories are allowed: {', '.join(self.SUPPORTED_LANGUAGES)}"
+                    f"Allowed: {', '.join(sorted(allowed))}"
                 )
 
     def _validate_category_indexes(self):
         """Warn when a category/subcategory directory lacks its README.md index (ADR-4.3)."""
+        skip = set(self.DOCS_ROOT_EXCEPTIONS)
         for lang in self.SUPPORTED_LANGUAGES:
             lang_dir = self._docs_root_path() / lang
             if not lang_dir.exists():
                 continue
             for entry in lang_dir.rglob('*'):
-                if entry.is_dir() and not (entry / 'README.md').exists():
+                if not entry.is_dir():
+                    continue
+                if any(part in skip for part in entry.relative_to(lang_dir).parts):
+                    continue
+                if not (entry / 'README.md').exists():
                     self.warnings.append(
                         f"Category/subcategory missing README.md index: "
                         f"{entry.relative_to(self.root_dir)}"
