@@ -33,6 +33,9 @@ theme:
         icon: material/brightness-4
         name: Alternar para preferência do sistema
 
+  logo: assets/img/zvorky.png
+  favicon: assets/img/zvorky.png
+
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
