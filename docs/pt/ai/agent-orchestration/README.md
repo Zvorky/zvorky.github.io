@@ -7,6 +7,6 @@ description: Arquiteturas determinísticas, máquinas de estados finitos (FSM), 
 
 Pesquisa e implementação de arquiteturas para agentes de IA: transições determinísticas de estado (FSM), capability gates, isolamento de ferramentas e modelos distribuídos de execução.
 
-## Artigos
+<!-- ## Artigos -->
 
 {{ list_children() }}
