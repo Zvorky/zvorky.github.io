@@ -46,20 +46,7 @@ def define_env(env):
     def _get_date(filepath: Path):
         return _read_frontmatter(filepath).get("date")
 
-    # ── macros ─────────────────────────────────────────────────────────────
-
-    @env.macro
-    def list_children(show_date: bool = True) -> str:
-        """
-        List subcategories and articles in the current page's directory.
-
-        Intended for README.md files at category and subcategory level (ADR-4.3).
-        Subcategories are only shown when they contain their own README.md.
-        Articles are all .md files other than README.md and LICENSE.md.
-        """
-        current_dir = Path(env.page.file.abs_src_path).parent
-        use_dir_urls = env.conf.get("use_directory_urls", True)
-
+    def _get_sections_and_articles(current_dir: Path):
         sections = []
         articles = []
 
@@ -74,20 +61,36 @@ def define_env(env):
                 date = _get_date(entry)
                 articles.append((entry.stem, title, date))
 
+        return sections, articles
+
+    # ── macros ─────────────────────────────────────────────────────────────
+
+    @env.macro
+    def list_children(show_date: bool = True) -> str:
+        """
+        List subcategories and articles in the current page's directory without hardcoded headings.
+
+        Intended for README.md files at category and subcategory level (ADR-4.3).
+        Headings (e.g., '## Subcategorias', '## Artigos') should be authored directly
+        in the Markdown file to allow proper localization.
+        """
+        current_dir = Path(env.page.file.abs_src_path).parent
+        use_dir_urls = env.conf.get("use_directory_urls", True)
+
+        sections, articles = _get_sections_and_articles(current_dir)
+
         if not sections and not articles:
             return "<p><em>No content yet.</em></p>"
 
         out = []
 
         if sections:
-            out.append("<h3>Subcategories</h3>")
             out.append("<ul>")
             for slug, title in sections:
                 out.append(f'  <li><a href="{quote(slug)}/">{title}</a></li>')
             out.append("</ul>")
 
         if articles:
-            out.append("<h3>Articles</h3>")
             out.append("<ul>")
             for slug, title, date in articles:
                 href = f"{quote(slug)}/" if use_dir_urls else f"{quote(slug)}.html"
@@ -95,6 +98,43 @@ def define_env(env):
                 out.append(f'  <li><a href="{href}">{title}</a>{date_str}</li>')
             out.append("</ul>")
 
+        return "\n".join(out)
+
+    @env.macro
+    def list_subcategories() -> str:
+        """
+        List only subcategories in the current page's directory without headers.
+        """
+        current_dir = Path(env.page.file.abs_src_path).parent
+        sections, _ = _get_sections_and_articles(current_dir)
+
+        if not sections:
+            return ""
+
+        out = ["<ul>"]
+        for slug, title in sections:
+            out.append(f'  <li><a href="{quote(slug)}/">{title}</a></li>')
+        out.append("</ul>")
+        return "\n".join(out)
+
+    @env.macro
+    def list_articles(show_date: bool = True) -> str:
+        """
+        List only articles in the current page's directory without headers.
+        """
+        current_dir = Path(env.page.file.abs_src_path).parent
+        use_dir_urls = env.conf.get("use_directory_urls", True)
+        _, articles = _get_sections_and_articles(current_dir)
+
+        if not articles:
+            return ""
+
+        out = ["<ul>"]
+        for slug, title, date in articles:
+            href = f"{quote(slug)}/" if use_dir_urls else f"{quote(slug)}.html"
+            date_str = f" <em>({date})</em>" if date and show_date else ""
+            out.append(f'  <li><a href="{href}">{title}</a>{date_str}</li>')
+        out.append("</ul>")
         return "\n".join(out)
 
     @env.macro

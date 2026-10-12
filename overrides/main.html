@@ -4,7 +4,7 @@
   {{ super() }}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sen:wght@400..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Sen:wght@400..800&display=swap" rel="stylesheet">
   <style>
     /* Titles & Highlights */
     :is(h1, h2, h3, h4, h5, h6),
@@ -13,6 +13,17 @@
     strong, b {
       font-family: 'Sen', sans-serif;
     }
+
+    /* Monospace & Code */
+    :is(code, kbd, pre),
+    .highlight,
+    .highlight code,
+    .highlight pre,
+    .md-typeset code,
+    .md-typeset pre {
+      font-family: 'Atkinson Hyperlegible Mono', monospace;
+    }
+
     /* Light mode (default) */
     [data-md-color-scheme="default"] {
       --md-primary-fg-color: #d9ff00;
