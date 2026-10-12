@@ -12,7 +12,7 @@ theme:
     - search.highlight
   font:
     text: Jost
-    code: Atkinson Hyperlegible Mono
+    code: PT Mono
   palette:
     - media: "(prefers-color-scheme)"
       scheme: default
