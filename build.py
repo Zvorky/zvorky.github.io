@@ -215,16 +215,16 @@ class MkDocsBuild:
         """Force root entrypoint to redirect to /en/."""
         index_file = self.root_dir / 'site' / 'index.html'
         redirect_html = """<!doctype html>
-<html lang=\"en\">
+<html lang="en">
   <head>
-    <meta charset=\"utf-8\">
+    <meta charset="utf-8">
     <title>Redirecting...</title>
-    <meta http-equiv=\"refresh\" content=\"0; url=en/\">
-    <link rel=\"canonical\" href=\"en/\">
+    <meta http-equiv="refresh" content="0; url=en/">
+    <link rel="canonical" href="en/">
     <script>window.location.replace('en/');</script>
   </head>
   <body>
-    <p>Redirecting to <a href=\"en/\">English</a>...</p>
+    <p>Redirecting to <a href="en/">English</a>...</p>
   </body>
 </html>
 """
@@ -238,6 +238,8 @@ class MkDocsBuild:
 
         if root_index.exists():
             content = root_index.read_text(encoding='utf-8')
+            # Adjust config base for Material for MkDocs localStorage scope synchronization
+            content = re.sub(r'("base":\s*)"\."', r'\1".."', content)
             content = content.replace('<head>', '<head>\n    <base href="../">', 1)
             en_index.parent.mkdir(parents=True, exist_ok=True)
             en_index.write_text(content, encoding='utf-8')
@@ -246,6 +248,8 @@ class MkDocsBuild:
         en_license = site_dir / 'en' / 'LICENSE' / 'index.html'
         if root_license.exists():
             content = root_license.read_text(encoding='utf-8')
+            # Adjust config base for Material for MkDocs localStorage scope synchronization
+            content = re.sub(r'("base":\s*)"\."', r'\1"../.."', content)
             content = content.replace('<head>', '<head>\n    <base href="../../">', 1)
             en_license.parent.mkdir(parents=True, exist_ok=True)
             en_license.write_text(content, encoding='utf-8')
